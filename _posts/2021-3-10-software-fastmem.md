@@ -51,7 +51,7 @@ This approach would technically work, but it'd be extremely slow.
 Another common approach is to do some bit magic to translate all addresses to their physical counterparts, then decode the physical address. In the PS1, the upper 3 bits of the address decide which segment the address is in. We can chop this off by doing some bit magic
 
 ```cpp
-const uint32_t REGION_MASKS = {
+const uint32_t REGION_MASKS[] = {
     0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, // The mask for KUSEG (2GB)
     0x7FFFFFFF, // the mask for KSEG0 (0.5GB)
     0x1FFFFFFF, // the mask for KSEG1 (0.5GB)
