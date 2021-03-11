@@ -1,5 +1,3 @@
-# Funny Anti-Piracy and Anti-Emulator Measures in Games
-
 Piracy has always been a recurring issue in the world of gaming. A lot of people don't want to, or can't, pay the amount gaming companies ask for. [Or maybe they don't want to pay almost full price for a game released in 2014.](https://www.amazon.com/Captain-Toad-Treasure-Tracker-Nintendo-Switch/dp/B07BBMV8MY) Of course companies have historically never been fans of having their software illegally obtained, and as such have turned to [DRM (Digital Rights Management).](https://en.wikipedia.org/wiki/Digital_rights_management) While modern games are known to have some pretty wacky DRM measures, retro games aren't that far behind ; in fact, anti-piracy measures have been a thing since at least the 80s. Let's take a look at some iconic and some less iconic occurences of anti-piracy or anti-emulator tricks from a couple of older systems.
 
 # Gameboy
