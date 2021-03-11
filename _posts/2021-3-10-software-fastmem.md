@@ -160,7 +160,7 @@ uint32_t read32 (uint32_t address) {
     const auto pointer = pageTableR [page]; // Get the pointer to this page
 
     if (pointer != 0) // check if the pointer is a nullptr. If it is not, then this is a fast page
-        return *(uint32_t*) (page + offset); // Actually read the value using the pointer from the page table + the offset. Sorry for the type punning but I'm azy
+        return *(uint32_t*) (pointer + offset); // Actually read the value using the pointer from the page table + the offset. Sorry for the type punning but I'm azy
 
     else {
         if (page == 0x1F80 || page == 0x9F80 || page == 0xBF80) { // check if this is the IO/scratchpad page
@@ -187,7 +187,7 @@ uint32_t read32 (uint32_t address) {
     const auto pointer = pageTableR [page]; // Get the pointer to this page
 
     if (pointer != 0) // check if the pointer is a nullptr. If it is not, then this is a fast page
-        return *(uint32_t*) (page + offset); // Actually read the value using the pointer from the page table + the offset. Sorry for the type punning but I'm lazy
+        return *(uint32_t*) (pointer + offset); // Actually read the value using the pointer from the page table + the offset. Sorry for the type punning but I'm lazy
 
     else { // slow page handling
         if (page == 0x1F80 || page == 0x9F80 || page == 0xBF80) { // check if this is the IO/scratchpad page
