@@ -22,7 +22,7 @@ Obviously with the insane amount of different mapper chips, as well as the whole
 ![Imgur](https://imgur.com/DYGxULk.png)
 <p style="text-align: center;">An epic emulation fail</p>
 
-This is actually part of Super Metroid's 2-stage anti-piracy/emulation check. Super Metroid has its own unique mapper chip. When booting, the game tries to validate that the correct amount of SRAM is present on the cartridge (8KB) and that it's properly mirrored. A bootleg cartridge or an bad emulator (_sigh_) would fail this check and cause the game to hang! And this behavior is present in a bunch of stupid games that have their own unique mappers... 
+This is actually part of Super Metroid's 2-stage anti-piracy/emulation check. Super Metroid has its own unique mapper chip. When booting, the game tries to validate that the correct amount of SRAM is present on the cartridge (8KB) and that it's properly mirrored. A bootleg cartridge or a bad emulator (_sigh_) would fail this check and cause the game to hang! And this behavior is present in a bunch of stupid games that have their own unique mappers... 
 
 As I mentioned before this is part of Super Metroid's 2-stage piracy check... The first part is checking the console's region via a Pixel Processing Unit (PPU) register! 
 
