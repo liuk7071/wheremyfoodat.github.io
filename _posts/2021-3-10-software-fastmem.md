@@ -3,7 +3,7 @@
 One of the most important components of a system is the bus. What's a bus? It's a magic little thing that handles where exactly a memory access will read from/write to. For example, let's assume we're making our simple Gameboy emulator, shall we?
 
 The CPU has specific instructions to read and write to memory. For the Gameboy for example, you can write the contents of the "A" register into address 0xC000 by just simply doing `ld [0xC000], A`
-But *where* exactly will writing to 0xC000 write too? Let's look at the Gameboy memory map.
+But *where* exactly will writing to 0xC000 write to? Let's look at the Gameboy memory map.
 
 ![Imgur](https://imgur.com/4BI2GLG.png)
 As you can see in this image, addresses 0xC000 to 0xDFFF are mapped to "Work RAM bank 0". But what makes writes to this address actually go to this address? That's the job of the bus. It takes an address and redirects the read/write to the appropriate location. To emulate this, one can easily make a function like this
