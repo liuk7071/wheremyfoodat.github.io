@@ -111,7 +111,7 @@ uint32_t read32 (uint32_t address) {
 
 Now let's see this in practice. First of all, we've got to remember some semantics. Certain addresses are readable *and* writeable, such as main RAM. Others are only readable (such as the BIOS), while others are only writeable (such as certain SPU registers). For this reason we'll need a different page table for reads and another one for writes
 
-We also need to figure out *how big* do we want a page to be? For the PS1, I consider 64KB per page to be the ideal size. This way, main RAM can be perfectly split into 32 pages (32 * 64KB = 2MB), the BIOS can be split perfectly into 8 pages (8 * 16KB = 512KB) and uh... what about IO ports and scratchpad?
+We also need to figure out *how big* do we want a page to be? For the PS1, I consider 64KB per page to be the ideal size. This way, main RAM can be perfectly split into 32 pages (32 * 64KB = 2MB), the BIOS can be split perfectly into 8 pages (8 * 64KB = 512KB) and uh... what about IO ports and scratchpad?
 
 We don't really care if IO ports can fit into pages perfectly. They're going to be in slow memory anyways. Now the scratchpad... There's 2 obstacles to using fastmem for the scratcphad
 
