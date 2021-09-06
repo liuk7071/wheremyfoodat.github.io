@@ -203,12 +203,12 @@ This register is actually really badly, misleadingly documented.
 - EM=IM: Invalid operation mask
 - DAZ: Denormals are zeros
 - 
-- EM=PE: Precision flag
-- EM=UE: Underflow flag
-- EM=OE: Overflow flag
-- EM=ZE: Division by zero flag
-- EM=DE: Denormal flag
-- EM=IE: Invalid operation flag
+- EF=PE: Precision flag
+- EF=UE: Underflow flag
+- EF=OE: Overflow flag
+- EF=ZE: Division by zero flag
+- EF=DE: Denormal flag
+- EF=IE: Invalid operation flag
 
 When an FPU exception occurs (eg division by 0), the corresponding flag bit is set. If the corresponding mask bit is set, the exception is handled automatically, producing a predefined (and often times usable) result, while allowing program execution to continue undisturbed.
 
