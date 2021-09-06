@@ -253,7 +253,7 @@ A lot of SSE instructions that operate on memory require that the address is ali
 
 AVX later on added stuff like fused multiply-add, which you can find on felixcloutier
 
-# Some compare instructions
+# Some convert instructions
 ![Imgur](https://imgur.com/wz2UxmZ.png)
 
 # Does my computer have SSE?
