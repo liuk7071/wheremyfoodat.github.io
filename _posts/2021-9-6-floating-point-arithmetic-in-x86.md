@@ -34,7 +34,7 @@ fadd st(1), st(0) ; store result in st(1)
 
 If one wanted to add the registers st(1) and st(2)... they'd be very disappointed to learn that due to x87 being insane and garbage, it demands that one of the operands is st(0), so you'd have to move values around the register stack. The same goes for instructions like fsub, fdiv, fmul, etc. Other instructions, like `fsin`, refuse to have any operand other than st(0) (implicitly), because as previously mentioned, x87 is very much accumulator-oriented, with st(0) being the accumulator.
 
-The first SIMD extension x86 introduced, named [MMX (Bullshit acronym, let' say it stands for MultiMedia eXtension)](https://en.wikipedia.org/wiki/MMX_(instruction_set)) actually re-uses the x87 register stack, and aliases the low 64 bits of each register to one of the MMX registers (mm0-mm7). This means that... using MMX and x87 together is **catastrophic**, and one has to signal the end of an MMX instruction block with the `emms` instruction like this.
+The first SIMD extension x86 introduced, named [MMX (Bullshit acronym, let's say it stands for MultiMedia eXtension)](https://en.wikipedia.org/wiki/MMX_(instruction_set)) actually re-uses the x87 register stack, and aliases the low 64 bits of each register to one of the MMX registers (mm0-mm7). This means that... using MMX and x87 together is **catastrophic**, and one has to signal the end of an MMX instruction block with the `emms` instruction like this.
 
 ```x86asm
 movq mm0, rax
