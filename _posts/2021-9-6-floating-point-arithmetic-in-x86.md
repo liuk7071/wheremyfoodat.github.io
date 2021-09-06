@@ -34,7 +34,7 @@ fadd st(1), st(0) ; store result in st(1)
 
 If one wanted to add the registers st(1) and st(2)... they'd be very disappointed to learn that due to x87 being insane and garbage, it demands that one of the operands is st(0), so you'd have to move values around the register stack. The same goes for instructions like fsub, fdiv, fmul, etc. Other instructions, like `fsin`, refuse to have any operand other than st(0) (implicitly), because as previously mentioned, x87 is very much accumulator-oriented, with st(0) being the accumulator.
 
-The first SIMD extension x86 introduced, named [MMX (Bullshit acronym, let's say it stands for MultiMedia eXtension)](https://en.wikipedia.org/wiki/MMX_(instruction_set)) actually re-uses the x87 register stack, and aliases the low 64 bits of each register to one of the MMX registers (mm0-mm7). This means that... using MMX and x87 together is **catastrophic**, and one has to signal the end of an MMX instruction block with the `emms` instruction like this.
+The first SIMD extension x86 introduced, named [MMX (Bullshit acronym, let' say it stands for MultiMedia eXtension)](https://en.wikipedia.org/wiki/MMX_(instruction_set)) actually re-uses the x87 register stack, and aliases the low 64 bits of each register to one of the MMX registers (mm0-mm7). This means that... using MMX and x87 together is **catastrophic**, and one has to signal the end of an MMX instruction block with the `emms` instruction like this.
 
 ```x86asm
 movq mm0, rax
@@ -49,7 +49,7 @@ So to summarize, x87 is awkward to use, slow, can totally break everything if us
 As previously mentioned, Intel introduced a new ISA extension to replace x87 and MMX, being able to do floating point arithmetic, SIMD, or both at the same time. This is gonna be our main focus today.
 
 # The SSE register set
-SSE introduces 8 new vector registers, named xmm0-xmm7, each one of them being 128-bit. x86-64 added 8 additional registers, named xmm8-xmm15. AVX-512 extended the register set even further, with the addition of xmm16-xmm31. Additionally, there's an SSE FPU control register, named MXCSR, which lets you configure various things as we'll see later on.
+SSE introduces 8 new vector registers, named xmm0-xmm7, each one of them being 128-bit. x86-64 added 8 additional registers, named xmm8-xmm15. AVX-512 extended the register set even further, with the addition of xmm16-xmm31. Additionally, there's an SSE FPU control register, named MXSCR, which lets you configure various things as we'll see later on.
 
 These registers were initially 128-bit. AVX later expanded them to 256-bit, and AVX512 expanded them to 512-bit.
 
@@ -184,7 +184,7 @@ Well, x86 supports regular IEEE-754 singles and doubles. However, you can opt ou
 ![Imgur](https://imgur.com/HVKqJRf.png)
 ![Imgur](https://imgur.com/xVFjAJ6.png)
 
-# The SSE control register - MXCSR
+# The SSE control register - MXSCR
 ![Imgur](https://imgur.com/ZHM3lY7.png)
 
 This register is actually really badly, misleadingly documented.
@@ -203,18 +203,18 @@ This register is actually really badly, misleadingly documented.
 - EM=IM: Invalid operation mask
 - DAZ: Denormals are zeros
 - 
-- EF=PE: Precision flag
-- EF=UE: Underflow flag
-- EF=OE: Overflow flag
-- EF=ZE: Division by zero flag
-- EF=DE: Denormal flag
-- EF=IE: Invalid operation flag
+- EM=PE: Precision flag
+- EM=UE: Underflow flag
+- EM=OE: Overflow flag
+- EM=ZE: Division by zero flag
+- EM=DE: Denormal flag
+- EM=IE: Invalid operation flag
 
 When an FPU exception occurs (eg division by 0), the corresponding flag bit is set. If the corresponding mask bit is set, the exception is handled automatically, producing a predefined (and often times usable) result, while allowing program execution to continue undisturbed.
 
 If the mask bit is not set, a software exception is fired to handle it.
 
-You can write MXCSR to memory using the instruction `STMXCSR m32`, or load a value from memory into it using `LDMXCSR m32`
+You can write MXSCR to memory using the instruction `STMXCSR m32`, or load a value from memory into it using `LDMXCSR m32`
 
 # ABI specifications
 
@@ -236,22 +236,27 @@ A lot of SSE instructions that operate on memory require that the address is ali
 # The important instructions
 
 - add {ss/sd/ps/pd} - Add floating point values
+- and {ps/pd} - AND packed floating point values. Floating point domain equivalent of pand
+- andn {ps/pd} - AND NOT packed floating point values. Floating point domain equivalent of pandn
 - comi {ss/sd} - Compare ordered floating point values and set EFLAGS
 - div {ss/sd/ps/pd} - Divide floating point values
 - max {ss/sd/ps/pd} - Get maximum floating point value
 - min {ss/sd/ps/pd} - Get minimum floating point value
-  
+- mov {ss/sd} - Move floating point value
+
 - movaps, movapd, movdqa, movdqu, movups, movupd - All 4 are used to load a (128/256/512)-bit value from memory. movaps/movapd/movups/movupd are in the floating point domain, while movdqa/movdqu are in the integer domain. The former 3 instructions require that the address is aligned, while the latter 3 don't 
 
 - mul {ss/sd/ps/pd} - Multiply floating point values
+- or {ps/pd} - OR packed floating point values. Floating point domain equivalent of por
 - rcp {ss/ps} - Compute reciprocal of single-precision floating point values
 - round {ss/sd/ps/pd} - Round floating point values
 - rsqrt {ss/ps} - Compute reciprocal of square roots of single-precision floating point values
 - sqrt {ss/sd/ps/pd} - Calculate square root of floating point values
 - sub {ss/sd/ps/pd} - Subtract floating point values
 - ucomi {ss/sd} - Compare unordered floating point values and set EFLAGS
+- xor {ps/pd} - XOR packed floating point values. Floating point domain equivalent of pxor
 
-AVX later on added stuff like fused multiply-add, which you can find on [felixcloutier's instruction reference](https://www.felixcloutier.com/x86/)
+AVX later on added stuff like fused multiply-add, which you can find on felixcloutier
 
 # Some convert instructions
 ![Imgur](https://imgur.com/wz2UxmZ.png)
