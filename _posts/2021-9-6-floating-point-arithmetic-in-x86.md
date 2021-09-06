@@ -49,7 +49,7 @@ So to summarize, x87 is awkward to use, slow, can totally break everything if us
 As previously mentioned, Intel introduced a new ISA extension to replace x87 and MMX, being able to do floating point arithmetic, SIMD, or both at the same time. This is gonna be our main focus today.
 
 # The SSE register set
-SSE introduces 8 new vector registers, named xmm0-xmm7, each one of them being 128-bit. x86-64 added 8 additional registers, named xmm8-xmm15. AVX-512 extended the register set even further, with the addition of xmm16-xmm31. Additionally, there's an SSE FPU control register, named MXSCR, which lets you configure various things as we'll see later on.
+SSE introduces 8 new vector registers, named xmm0-xmm7, each one of them being 128-bit. x86-64 added 8 additional registers, named xmm8-xmm15. AVX-512 extended the register set even further, with the addition of xmm16-xmm31. Additionally, there's an SSE FPU control register, named MXCSR, which lets you configure various things as we'll see later on.
 
 These registers were initially 128-bit. AVX later expanded them to 256-bit, and AVX512 expanded them to 512-bit.
 
@@ -184,7 +184,7 @@ Well, x86 supports regular IEEE-754 singles and doubles. However, you can opt ou
 ![Imgur](https://imgur.com/HVKqJRf.png)
 ![Imgur](https://imgur.com/xVFjAJ6.png)
 
-# The SSE control register - MXSCR
+# The SSE control register - MXCSR
 ![Imgur](https://imgur.com/ZHM3lY7.png)
 
 This register is actually really badly, misleadingly documented.
@@ -214,7 +214,7 @@ When an FPU exception occurs (eg division by 0), the corresponding flag bit is s
 
 If the mask bit is not set, a software exception is fired to handle it.
 
-You can write MXSCR to memory using the instruction `STMXCSR m32`, or load a value from memory into it using `LDMXCSR m32`
+You can write MXCSR to memory using the instruction `STMXCSR m32`, or load a value from memory into it using `LDMXCSR m32`
 
 # ABI specifications
 
