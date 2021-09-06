@@ -215,3 +215,59 @@ When an FPU exception occurs (eg division by 0), the corresponding flag bit is s
 If the mask bit is not set, a software exception is fired to handle it.
 
 You can write MXSCR to memory using the instruction `STMXCSR m32`, or load a value from memory into it using `LDMXCSR m32`
+
+# ABI specifications
+
+In the Microsoft/Windows ABI, the first four float and double arguments are passed in xmm0-xmm3. Afterwards, the next floating point arguments are passed via the stack (left to right). Floating point return values are always returned through xmm0.
+
+xmm0-xmm5 are considered volatile (ie functions are assumed to corrupt them) while xmm6-xmm15 are considered non-volatile.
+
+On AVX512 machines, xmm16-xmm31 are also considered volatile
+
+In the System V/Linux ABI, the first eight float and double parameters are passed in xmm0-xmm7. Floating point return values are stored in xmm0 and xmm1. Additional parameters are passed through the stack. All xmm registers are considered volatile.
+
+# Fun fact
+
+The xmm registers are partially responsible for System V and Windows ABIs requiring an infamous 128-bit stack alignment. This is partially because
+
+# SSE instruction alignment
+A lot of SSE instructions that operate on memory require that the address is aligned to the proper boundary. For example `movdqa xmm0, [rcx]` and `vmovaps ymm0, [rcx]` require that the target address is 16 and 32 byte aligned respectively. The `a` in both mnemonics stands for aligned, indicating that the address MUST be aligned. movdqu and movups can be used if the address is not guaranteed to be aligned, with potential performance drawbacks.
+
+# The important instructions
+
+- add {ss/sd/ps/pd} - Add floating point values
+- comi {ss/sd} - Compare ordered floating point values and set EFLAGS
+- div {ss/sd/ps/pd} - Divide floating point values
+- max {ss/sd/ps/pd} - Get maximum floating point value
+- min {ss/sd/ps/pd} - Get minimum floating point value
+  
+- movaps, movapd, movdqa, movdqu, movups, movupd - All 4 are used to load a (128/256/512)-bit value from memory. movaps/movapd/movups/movupd are in the floating point domain, while movdqa/movdqu are in the integer domain. The former 3 instructions require that the address is aligned, while the latter 3 don't 
+
+- mul {ss/sd/ps/pd} - Multiply floating point values
+- rcp {ss/ps} - Compute reciprocal of single-precision floating point values
+- round {ss/sd/ps/pd} - Round floating point values
+- rsqrt {ss/ps} - Compute reciprocal of square roots of single-precision floating point values
+- sqrt {ss/sd/ps/pd} - Calculate square root of floating point values
+- sub {ss/sd/ps/pd} - Subtract floating point values
+- ucomi {ss/sd} - Compare unordered floating point values and set EFLAGS
+
+AVX later on added stuff like fused multiply-add, which you can find on felixcloutier
+
+# Some compare instructions
+![Imgur](https://imgur.com/wz2UxmZ.png)
+
+# Does my computer have SSE?
+Every x86-64 implementation must support SSE2 at the very minimum, while most modern CPUs will support all SSE versions + AVX, and very likely AVX2. AVX-512 on the other hand is quite rare.
+
+This is when each SSE/AVX iteration was first established.
+
+- SSE (1999)
+- SSE2 (2001)
+- SSE3 (2004)
+- SSSE3 (2006)
+- SSE4 (2006)
+- AVX (2008)
+- AVX2 (2013)
+- AVX-512 (2015, still not widely available)
+
+Knowing this, choose which ones you're willing to use.
