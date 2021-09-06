@@ -251,7 +251,7 @@ A lot of SSE instructions that operate on memory require that the address is ali
 - sub {ss/sd/ps/pd} - Subtract floating point values
 - ucomi {ss/sd} - Compare unordered floating point values and set EFLAGS
 
-AVX later on added stuff like fused multiply-add, which you can find on felixcloutier
+AVX later on added stuff like fused multiply-add, which you can find on [felixcloutier's instruction reference](https://www.felixcloutier.com/x86/)
 
 # Some convert instructions
 ![Imgur](https://imgur.com/wz2UxmZ.png)
