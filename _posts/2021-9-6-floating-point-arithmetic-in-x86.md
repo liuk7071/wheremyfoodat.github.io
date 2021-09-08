@@ -1,7 +1,7 @@
 # The x86 ISA and floating point arithmetic
 
 # Introduction
-The following text is not meant to educate the reader on every single detail of how floating point arithmetic works. Au contraire, it aims to demystify the way it works on x86, and serve as a tutorial for high-level-language programmers on how to (ab)use it.
+The following text is not meant to educate the reader on every single of how floating point arithmetic works. Au contraire, it aims to demystify the way it works on x86, and serve as a tutorial for high-level-language programmers on how to (ab)use it.
 
 # History
 Introduced on June 8, 1978 with the release of the [Intel 8086](https://en.wikipedia.org/wiki/Intel_8086), x86 initially lacked any way to do floating point arithmetic. In that era, where CPUs were barely competent at doing anything, almost everything revolved around integer arithmetic. In order to represent fractional values, developers would often use fixed-point arithmetic. That is, splitting a plain integer into an integer part and a fractional part, and work with it via regular integer arithmetic.
@@ -10,9 +10,9 @@ There's many ways to implement fixed point arithmetic. For example, you can use 
 
 This way of doing fractional numbers was **everywhere** on machines incapable of doing floating point math, even on more modern systems like the Nintendo DS (Note: Don't hire Nintendo's engineers)
 
-Now that we've learned about fixed point arithmetic, it's time to never care about it again. Everything changed ~~when the fire nation attacked~~ when Intel released the [Intel 8087](https://en.wikipedia.org/wiki/Intel_8087), a dedicated coprocessor whose sole purpose is to do floating point math. This is the first time the x86 architecture obtained an FPU. The Intel 8087 instruction set, nicknamed x87, was later integrated into normal CPUs, rendering dedicated FPU coprocessors obsolete. Regrettably, x87 is absolutely horrible to use, and was superseded in almost every way later on.
+Now that we've learned about fixed point arithmetic, it's time to never care about it again. Everything changed ~~when the fire nation attacked~~ when Intel released the [Intel 8087](https://en.wikipedia.org/wiki/Intel_8087), a dedicated coprocessor whose sole purpose is to do floating point math. This is the first time the x86 architecture obtained an FPU. The Intel 8087 instruction set, nicknamed x87, was later integrated into normal CPUs, rendering dedicated FPU coprocessors useless. Regrettably, x87 is absolutely horrible to use, and was superseded in almost every way later on.
 
-With the advent of the [Pentium III](https://en.wikipedia.org/wiki/Pentium_III), a new instruction set extension to the x86 ISA was added, named [SSE (Streaming SIMD Extensions)](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions). This (along with future SSE versions and AVX) not only added a completely new way to do floating point arithmetic, but allows users to operate on packed float and integer values using SIMD. Nowadays, SSE is the main way of operating on scalar and packed single and double precision floating point values, with some minor use cases where x87 is still dominant.
+With the advent of the [Pentium III](https://en.wikipedia.org/wiki/Pentium_III), a new instruction set extension to the x86 ISA was added, named [SSE (Streaming SIMD Extensions)](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions). This (allowing with future SSE versions and AVX) not only added a completely new way to do floating point arithmetic, but allows users to operate on packed float and integer values using SIMD. Nowadays, SSE is the main way of operating on scalar and packed single and double precision floating point values, with some minor use cases where x87 is still dominant.
 
 # One last look at x87
 We have barely discussed the x87 instruction set, but this is gonna be our first and last look at it since I consider it a relic of the past that no self-respecting human being should bother with.
@@ -24,11 +24,11 @@ This ISA extension offers single-precision (32-bit), double-precision (64-bit) a
 ![Imgur](https://imgur.com/ENWG6Xx.png)
 
 x87 instructions are usually prefixed with an `f`. For example to add the registers ST(0) and ST(1), one would do
-```x86asm
+```nasm
 fadd st(0), st(1) ; store result in st(0)
 ```
 Or alternatively
-```x86asm
+```nasm
 fadd st(1), st(0) ; store result in st(1)
 ```
 
@@ -36,7 +36,7 @@ If one wanted to add the registers st(1) and st(2)... they'd be very disappointe
 
 The first SIMD extension x86 introduced, named [MMX (Bullshit acronym, let' say it stands for MultiMedia eXtension)](https://en.wikipedia.org/wiki/MMX_(instruction_set)) actually re-uses the x87 register stack, and aliases the low 64 bits of each register to one of the MMX registers (mm0-mm7). This means that... using MMX and x87 together is **catastrophic**, and one has to signal the end of an MMX instruction block with the `emms` instruction like this.
 
-```x86asm
+```nasm
 movq mm0, rax
 ; other MMX operations
 emms
@@ -58,15 +58,15 @@ These registers were initially 128-bit. AVX later expanded them to 256-bit, and 
 Supposing our CPU supports AVX-512, we can access the full 512 bits of the first vector register by using the `zmm0` register. We can also access the low 256 bits using the `ymm0` register, and the low 128 bits using the `xmm0` register.
 
 Writing to a 128-bit/256-bit vector register zero's out the upper bits. For example
-```x86asm
+```nasm
 movdqa xmm0, xmm1
 ```
 We'll explain the weird names later on; this instruction copies the 128-bit xmm1 register to xmm0. The upper bits of ymm0 and zmm0 however, are set to 0. For this reason, you'll commonly see this instruction used to zero out the entirety of a vector register
-```x86asm
+```nasm
 (v)pxor xmm0, xmm0 ; xor every bit of xmm0 with itself, essentially clearing them all
 ```
 Similarly to how you'll often see
-```x86asm
+```nasm
 xor eax, eax
 ```
 To set rax to 0.
@@ -111,7 +111,7 @@ double add (double a, double b) {
 So we've got 2 scalar doubles (a and b), and we want to add them together. With the naming table above that means we want the instruction... `add`+`s`+`d`. Meaning `addsd` (add scalar double-precision).
 
 Assuming double return values are stored in xmm0, and that a and b are passed to xmm0 and xmm1 respectively, that's simply
-```x86asm
+```nasm
 addsd xmm0, xmm1
 ret
 ```
@@ -124,7 +124,7 @@ float inverse (float a) {
 ```
 This is a bit of a pain in the ass, cause SSE doesn't really support immediates the same way the integer ISA does. Therefore we need to load that 1.0 from memory using `movss`, like so.
 
-```x86asm
+```nasm
 movss xmm1, xmm0 ; move a to xmm1
 movss xmm0, [rel .my_fucking_constant] ; move 1.0 to xmm0 with
 divss xmm0, xmm1 ; divide xmm0 by xmm1, result in xmm0
@@ -146,7 +146,7 @@ int is_bigger_than_three (float a) {
 
 We want to compare a float and another float. So we'll use `comiss` (Compare Scalar Ordered Single-Precision Floating-Point Values and Set EFLAGS. Yes.)
 
-```x86asm
+```nasm
 mov eax, 420 ; return value if condition is untrue
 mov ecx, 69  ; return value if condition is true
 
@@ -167,7 +167,7 @@ For example, to convert a float (scalar single) to a double (scalar double), we'
 
 When converting a floating point type to an integer type, we need to replace that `cvt` to `cvtt` (convert with truncation). For example convert a float to an `int` we'd use `cvttss2si` (convert with truncation scalar single to signed integer).
 
-```x86asm
+```nasm
 cvtss2sd xmm0, xmm1 ; xmm0 = (double) xmm1
 cvtsd2ss xmm0, xmm0 ; xmm0 = (float) xmm0
 cvttss2si eax, xmm0 ; eax = (uint32_t) xmm0
