@@ -22,7 +22,7 @@ fn readByte (address: u16) -> u8 {
 ```
 
 # What's a fastmem and why do we care?
-As systems get more complex, their memory mapping gets more complex too and as such, it's harder to decode addresses. Clock speeds also going up means that the CPU can (and will) perform a lot of memory accesses every second. For example, the PS1's r3000a runs at 33MHz. Assuming you've got an interpreter running 1 instruction per cycle, that's **33 million memory reads a second just for fetching instructions**, disregarding actual data loads/stores.
+As systems get more complex, their memory mapping gets more complex too and as such, it's harder to decode addresses. Clock speeds also going up means that the CPU can (and will) perform a lot of memory accesses every second. For example, the PS1's r3000a runs at 33MHz. Assuming you've got an interpreter running 1 instruction per cycle and you're not emulating the icache, that's **33 million memory reads a second just for fetching instructions**, disregarding actual data loads/stores.
 
 Let's take a look at its [memory map](https://psx-spx.consoledev.net/memorymap/), since that'll be what'll keep us occupied today
 ![Imgur](https://imgur.com/1fahuHg.png)
