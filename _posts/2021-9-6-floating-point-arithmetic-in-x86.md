@@ -157,7 +157,7 @@ ret
 .my_fucking_constant:
     dd 3.0
 ```
-Similarly, if we `a` was a double, we'd merely change `comiss` to `comisd` and use `dq 3.0` instead of `dd 3.0`
+Similarly, if `a` were a double, we'd merely change `comiss` to `comisd` and use `dq 3.0` instead of `dd 3.0`
 
 # Where muh conversions
 Our conversion instructions are named like so.
